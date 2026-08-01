@@ -6,7 +6,7 @@
   const RESEND_STATE_KEY = "kimoai_resend_state";
 
   const authBundle = window.kimoaiSupabase || {};
-  const supabase = authBundle.client || null;
+  const supabase = authBundle.client || window.supabaseClient || null;
   const verifyRedirectUrl = authBundle.verifyRedirectUrl || "";
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -284,16 +284,22 @@
       }
 
       try {
-        const { error } = await supabase.auth.signUp({
+        console.info("Attempting Supabase signup", { email });
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: verifyRedirectUrl,
-            data: { full_name: name },
+            data: {
+              full_name: name,
+            },
+            emailRedirectTo: verifyRedirectUrl || "https://abdulkareemd99.github.io/kimoAI/verify-email.html",
           },
         });
 
+        console.log("Supabase signup response", { data, error });
+
         if (error) {
+          console.error("Supabase signup error:", error);
           const msg = mapSupabaseError(error);
           setError("#signupEmailError", msg, form);
           showToast(msg, "error");

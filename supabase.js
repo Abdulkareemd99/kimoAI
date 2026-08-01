@@ -13,8 +13,15 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
     },
 });
 
+window.supabaseClient = supabaseClient;
+
 window.kimoaiSupabase = {
     client: supabaseClient,
     siteUrl: KIMOAI_SITE_URL,
     verifyRedirectUrl: KIMOAI_VERIFY_REDIRECT_URL,
 };
+
+console.info("KimoAI Supabase client initialized", {
+    url: SUPABASE_URL,
+    hasAnonKey: Boolean(SUPABASE_ANON_KEY),
+});
