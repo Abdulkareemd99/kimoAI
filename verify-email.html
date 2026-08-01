@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KimoAI Verify Email | Confirm Your Account</title>
+    <meta
+      name="description"
+      content="Verify your KimoAI email address to complete account setup and continue to login."
+    />
+    <meta property="og:title" content="KimoAI Email Verification" />
+    <meta
+      property="og:description"
+      content="Confirm your email and continue to KimoAI login."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="Main header">
+      <div class="container nav-wrap">
+        <a href="index.html#home" class="logo" aria-label="KimoAI home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          KimoAI
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+        </button>
+
+        <nav class="nav-menu" aria-label="Main navigation">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#generator">AI Video Generator</a>
+          <a href="index.html#features">Features</a>
+          <a href="index.html#how-it-works">How It Works</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="index.html#examples">Examples</a>
+          <a href="index.html#faq">FAQ</a>
+        </nav>
+
+        <div class="nav-ctas">
+          <a class="btn btn-secondary btn-small" href="login.html">Log In</a>
+          <a class="btn btn-primary btn-small" href="signup.html">Sign Up Free</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-wrap">
+      <section id="verifyEmailApp" class="auth-card reveal" aria-label="Email verification section">
+        <span class="badge">Email Verification</span>
+        <h1 id="verifyStateTitle">Checking Verification...</h1>
+        <p id="verifyStateCopy" class="section-copy">Please wait while we verify your email link.</p>
+
+        <div class="hero-actions" style="margin-top: 20px">
+          <button id="continueToLoginButton" class="btn btn-primary btn-medium hidden" type="button">
+            Continue to Login
+          </button>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--line); margin: 22px 0" />
+
+        <h2 style="margin: 0 0 8px; font-size: 1.1rem">Resend Verification Email</h2>
+        <p class="section-copy" style="margin-top: 0">
+          If you did not receive your verification email, request a new one.
+        </p>
+
+        <form id="resendVerificationForm" class="form-grid" novalidate>
+          <div class="field">
+            <label for="resendEmail">Email Address</label>
+            <input id="resendEmail" type="email" autocomplete="email" required />
+            <div id="resendEmailError" class="field-error" aria-live="polite"></div>
+          </div>
+
+          <button id="resendButton" class="btn btn-secondary btn-medium" type="submit">
+            Resend Verification Email
+          </button>
+          <p id="resendCooldown" class="small-note" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

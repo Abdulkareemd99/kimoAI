@@ -1,9 +1,13 @@
 (function () {
   "use strict";
 
-  const DEMO_USERS_KEY = "kimoai_users";
-  const CURRENT_USER_KEY = "kimoai_current_user";
   const PROJECTS_KEY = "kimoai_projects";
+  const RESEND_COOLDOWN_SECONDS = 60;
+  const RESEND_STATE_KEY = "kimoai_resend_state";
+
+  const authBundle = window.kimoaiSupabase || {};
+  const supabase = authBundle.client || null;
+  const verifyRedirectUrl = authBundle.verifyRedirectUrl || "";
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -20,6 +24,8 @@
     initAuthForms();
     initForgotPassword();
     initDashboard();
+    initVerificationPage();
+    initLoginQueryHints();
   });
 
   function initHeader() {
@@ -93,12 +99,8 @@
 
         if (trigger.dataset.videoUrl) {
           const frame = $("iframe, video", modal);
-          if (frame && frame.tagName === "IFRAME") {
-            frame.setAttribute("src", trigger.dataset.videoUrl);
-          }
-          if (frame && frame.tagName === "VIDEO") {
-            frame.setAttribute("src", trigger.dataset.videoUrl);
-          }
+          if (frame && frame.tagName === "IFRAME") frame.setAttribute("src", trigger.dataset.videoUrl);
+          if (frame && frame.tagName === "VIDEO") frame.setAttribute("src", trigger.dataset.videoUrl);
         }
 
         modal.classList.add("active");
@@ -106,7 +108,7 @@
       });
     });
 
-    $$("[data-modal-close]").forEach((closeBtn) => {
+    $$('[data-modal-close]').forEach((closeBtn) => {
       closeBtn.addEventListener("click", () => closeModal(closeBtn.closest(".modal")));
     });
 
@@ -137,6 +139,8 @@
 
     faqItems.forEach((item) => {
       const button = $(".faq-question", item);
+      if (!button) return;
+
       button.addEventListener("click", () => {
         const isOpen = item.classList.contains("active");
         faqItems.forEach((faq) => {
@@ -144,6 +148,7 @@
           const q = $(".faq-question", faq);
           if (q) q.setAttribute("aria-expanded", "false");
         });
+
         if (!isOpen) {
           item.classList.add("active");
           button.setAttribute("aria-expanded", "true");
@@ -153,13 +158,13 @@
   }
 
   function initTestimonials() {
-    const items = $$("[data-testimonial-item]");
+    const items = $$('[data-testimonial-item]');
     if (!items.length) return;
 
     let index = 0;
     const dots = $$(".dot");
-    const prev = $("[data-carousel-prev]");
-    const next = $("[data-carousel-next]");
+    const prev = $('[data-carousel-prev]');
+    const next = $('[data-carousel-next]');
 
     function render() {
       items.forEach((item, i) => item.classList.toggle("hidden", i !== index));
@@ -202,7 +207,6 @@
         button.textContent = "Preparing Setup...";
       }
 
-      // Real AI generation API request can be integrated here later.
       setTimeout(() => {
         showToast("Generation setup saved. Connect your AI API to render videos.", "success");
         if (button) {
@@ -214,14 +218,14 @@
   }
 
   function initPricingButtons() {
-    $$("[data-pricing-action]").forEach((btn) => {
+    $$('[data-pricing-action]').forEach((btn) => {
       btn.addEventListener("click", () => {
         const action = btn.getAttribute("data-pricing-action");
         if (action === "contact") {
           window.location.href = "mailto:sales@kimoai.demo?subject=KimoAI%20Business%20Plan";
-        } else {
-          window.location.href = "signup.html";
+          return;
         }
+        window.location.href = "signup.html";
       });
     });
   }
@@ -245,15 +249,20 @@
   }
 
   function handleSignup(form) {
-    form.addEventListener("submit", (event) => {
+    if (!supabase) {
+      disableForm(form, "Authentication service unavailable.");
+      return;
+    }
+
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearErrors(form);
 
-      const name = $("#fullName").value.trim();
-      const email = $("#signupEmail").value.trim().toLowerCase();
-      const password = $("#signupPassword").value;
-      const confirm = $("#confirmPassword").value;
-      const agreed = $("#agreeTerms").checked;
+      const name = $("#fullName")?.value.trim() || "";
+      const email = $("#signupEmail")?.value.trim().toLowerCase() || "";
+      const password = $("#signupPassword")?.value || "";
+      const confirm = $("#confirmPassword")?.value || "";
+      const agreed = $("#agreeTerms")?.checked || false;
 
       let valid = true;
       if (!name) valid = setError("#fullNameError", "Full name is required.", form);
@@ -267,71 +276,105 @@
         return;
       }
 
-      // In production, replace localStorage writes with a secure signup API call.
-      // Example: POST /api/auth/signup with hashed password handling on the server.
-
-      const users = getStore(DEMO_USERS_KEY, []);
-      const exists = users.some((u) => u.email === email);
-      if (exists) {
-        setError("#signupEmailError", "An account with this email already exists.", form);
-        showToast("Account already exists. Please log in.", "error");
-        return;
+      const submitButton = $("button[type='submit']", form);
+      const originalLabel = submitButton ? submitButton.textContent : "";
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Creating Account...";
       }
 
-      const newUser = {
-        id: `user_${Date.now()}`,
-        name,
-        email,
-        password,
-        createdAt: new Date().toISOString(),
-      };
+      try {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: verifyRedirectUrl,
+            data: { full_name: name },
+          },
+        });
 
-      users.push(newUser);
-      setStore(DEMO_USERS_KEY, users);
-      setStore(CURRENT_USER_KEY, { id: newUser.id, name: newUser.name, email: newUser.email });
+        if (error) {
+          const msg = mapSupabaseError(error);
+          setError("#signupEmailError", msg, form);
+          showToast(msg, "error");
+          return;
+        }
 
-      showToast("Account created successfully. Redirecting to your dashboard.", "success");
-      form.reset();
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 800);
+        showToast(
+          "Your account has been created. We've sent a verification email to your email address. Please check your inbox and verify your email before logging in.",
+          "success"
+        );
+        form.reset();
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = originalLabel;
+        }
+      }
     });
   }
 
   function handleLogin(form) {
-    form.addEventListener("submit", (event) => {
+    if (!supabase) {
+      disableForm(form, "Authentication service unavailable.");
+      return;
+    }
+
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearErrors(form);
 
-      const email = $("#loginEmail").value.trim().toLowerCase();
-      const password = $("#loginPassword").value;
+      const email = $("#loginEmail")?.value.trim().toLowerCase() || "";
+      const password = $("#loginPassword")?.value || "";
 
       let valid = true;
       if (!isValidEmail(email)) valid = setError("#loginEmailError", "Enter a valid email.", form);
       if (!password) valid = setError("#loginPasswordError", "Password is required.", form);
       if (!valid) return;
 
-      // In production, replace this local lookup with a secure login API request.
-      // Example: POST /api/auth/login and store only server-issued auth tokens.
-
-      const users = getStore(DEMO_USERS_KEY, []);
-      const user = users.find((u) => u.email === email && u.password === password);
-
-      if (!user) {
-        setError("#loginPasswordError", "Incorrect email or password.", form);
-        showToast("Unable to log in with those credentials.", "error");
-        return;
+      const submitButton = $("button[type='submit']", form);
+      const originalLabel = submitButton ? submitButton.textContent : "";
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Logging In...";
       }
 
-      setStore(CURRENT_USER_KEY, { id: user.id, name: user.name, email: user.email });
-      showToast("Welcome back to KimoAI.", "success");
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 700);
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error || !data.user) {
+          const msg = mapSupabaseError(error);
+          setError("#loginPasswordError", msg, form);
+          showToast(msg, "error");
+          if (msg.includes("verify your email")) showResendHelper(email);
+          return;
+        }
+
+        if (!data.user.email_confirmed_at) {
+          await supabase.auth.signOut();
+          const msg = "Please verify your email address before logging in.";
+          setError("#loginPasswordError", msg, form);
+          showToast(msg, "error");
+          showResendHelper(email);
+          return;
+        }
+
+        showToast("Login success. Redirecting to your dashboard.", "success");
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 600);
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = originalLabel;
+        }
+      }
     });
   }
 
   function initForgotPassword() {
+    if (!supabase) return;
+
     const forgotBtn = $("#forgotPasswordButton");
     const form = $("#forgot-form");
     if (!forgotBtn || !form) return;
@@ -341,21 +384,45 @@
       if (!modal) return;
       modal.classList.add("active");
       modal.setAttribute("aria-hidden", "false");
-      $("#forgotEmail").focus();
+      $("#forgotEmail")?.focus();
     });
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const email = $("#forgotEmail").value.trim().toLowerCase();
-      const error = $("#forgotEmailError");
-      if (error) error.textContent = "";
+
+      const email = $("#forgotEmail")?.value.trim().toLowerCase() || "";
+      const errorEl = $("#forgotEmailError");
+      if (errorEl) errorEl.textContent = "";
 
       if (!isValidEmail(email)) {
-        if (error) error.textContent = "Please enter a valid email address.";
+        if (errorEl) errorEl.textContent = "Please enter a valid email address.";
         return;
       }
 
-      showToast("Reset request received. Check your inbox for next steps.", "success");
+      const submitButton = $("button[type='submit']", form);
+      const originalLabel = submitButton ? submitButton.textContent : "";
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Sending...";
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: verifyRedirectUrl,
+      });
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalLabel;
+      }
+
+      if (error) {
+        const msg = mapSupabaseError(error);
+        if (errorEl) errorEl.textContent = msg;
+        showToast(msg, "error");
+        return;
+      }
+
+      showToast("Password reset email sent. Check your inbox.", "success");
       form.reset();
       const modal = $("#forgotModal");
       if (modal) {
@@ -365,57 +432,58 @@
     });
   }
 
-  function initDashboard() {
+  async function initDashboard() {
     if (!document.body.classList.contains("dashboard-page")) return;
-
-    const currentUser = getStore(CURRENT_USER_KEY, null);
-    if (!currentUser) {
-      showToast("Please log in to access your dashboard.", "error");
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 700);
+    if (!supabase) {
+      showToast("Authentication service unavailable.", "error");
       return;
     }
 
+    const user = await requireVerifiedUser();
+    if (!user) return;
+
     const nameSlot = $("#dashUserName");
-    if (nameSlot) nameSlot.textContent = currentUser.name;
+    if (nameSlot) {
+      nameSlot.textContent = user.user_metadata?.full_name || user.email?.split("@")[0] || "Creator";
+    }
 
     const logoutBtn = $("#logoutButton");
     if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem(CURRENT_USER_KEY);
+      logoutBtn.addEventListener("click", async () => {
+        await supabase.auth.signOut();
         showToast("You have been logged out.", "success");
         setTimeout(() => {
-          window.location.href = "index.html";
-        }, 700);
+          window.location.href = "login.html";
+        }, 450);
       });
     }
 
-    seedProjectsIfNeeded(currentUser.id);
-    renderProjects();
+    seedProjectsIfNeeded(user.id);
+    renderProjects(user.id);
 
     const search = $("#projectSearch");
     const filter = $("#projectFilter");
-    if (search) search.addEventListener("input", renderProjects);
-    if (filter) filter.addEventListener("change", renderProjects);
+    if (search) search.addEventListener("input", () => renderProjects(user.id));
+    if (filter) filter.addEventListener("change", () => renderProjects(user.id));
 
     const createVideoBtn = $("#createVideoBtn");
     if (createVideoBtn) {
       createVideoBtn.addEventListener("click", () => {
         const project = {
           id: `project_${Date.now()}`,
-          userId: currentUser.id,
+          userId: user.id,
           title: "New Concept Video",
           date: new Date().toISOString().slice(0, 10),
           status: "Draft",
           thumb:
             "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=640&q=80",
         };
+
         const allProjects = getStore(PROJECTS_KEY, []);
         allProjects.unshift(project);
         setStore(PROJECTS_KEY, allProjects);
         showToast("A new project has been created.", "success");
-        renderProjects();
+        renderProjects(user.id);
       });
     }
 
@@ -426,11 +494,11 @@
       });
     }
 
-    function renderProjects() {
+    function renderProjects(currentUserId) {
       const wrapper = $("#projectList");
       if (!wrapper) return;
 
-      const allProjects = getStore(PROJECTS_KEY, []).filter((p) => p.userId === currentUser.id);
+      const allProjects = getStore(PROJECTS_KEY, []).filter((p) => p.userId === currentUserId);
       const query = ($("#projectSearch")?.value || "").trim().toLowerCase();
       const statusFilter = $("#projectFilter")?.value || "all";
 
@@ -477,10 +545,210 @@
           const next = all.filter((project) => project.id !== id);
           setStore(PROJECTS_KEY, next);
           showToast("Project deleted.", "success");
-          renderProjects();
+          renderProjects(currentUserId);
         });
       });
     }
+  }
+
+  function initVerificationPage() {
+    const shell = $("#verifyEmailApp");
+    if (!shell || !supabase) return;
+
+    const titleEl = $("#verifyStateTitle");
+    const copyEl = $("#verifyStateCopy");
+    const continueBtn = $("#continueToLoginButton");
+    const resendForm = $("#resendVerificationForm");
+    const resendEmail = $("#resendEmail");
+    const resendError = $("#resendEmailError");
+    const resendButton = $("#resendButton");
+    const cooldownLabel = $("#resendCooldown");
+
+    if (continueBtn) {
+      continueBtn.addEventListener("click", () => {
+        window.location.href = "login.html";
+      });
+    }
+
+    hydrateEmailFromQuery();
+    setVerifyState("loading");
+    updateResendCooldown(cooldownLabel, resendButton);
+    setInterval(() => updateResendCooldown(cooldownLabel, resendButton), 1000);
+    checkVerificationResult();
+
+    if (resendForm) {
+      resendForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (resendError) resendError.textContent = "";
+
+        const email = (resendEmail?.value || "").trim().toLowerCase();
+        if (!isValidEmail(email)) {
+          if (resendError) resendError.textContent = "Please enter a valid email address.";
+          return;
+        }
+
+        if (isResendCoolingDown()) {
+          showToast("Please wait before requesting another verification email.", "error");
+          return;
+        }
+
+        resendButton.disabled = true;
+        resendButton.textContent = "Sending...";
+
+        const { error } = await supabase.auth.resend({
+          type: "signup",
+          email,
+          options: {
+            emailRedirectTo: verifyRedirectUrl,
+          },
+        });
+
+        resendButton.disabled = false;
+        resendButton.textContent = "Resend Verification Email";
+
+        if (error) {
+          const msg = mapSupabaseError(error);
+          if (resendError) resendError.textContent = msg;
+          showToast(msg, "error");
+          return;
+        }
+
+        startResendCooldown();
+        showToast("Verification email sent successfully.", "success");
+      });
+    }
+
+    async function checkVerificationResult() {
+      try {
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get("code");
+
+        if (code) {
+          await supabase.auth.exchangeCodeForSession(code);
+        } else {
+          await supabase.auth.getSession();
+        }
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user && user.email_confirmed_at) {
+          setVerifyState("success");
+          await supabase.auth.signOut();
+          return;
+        }
+
+        setVerifyState("failed");
+      } catch (_) {
+        setVerifyState("failed");
+      }
+    }
+
+    function setVerifyState(state) {
+      if (state === "loading") {
+        if (titleEl) titleEl.textContent = "Checking Verification...";
+        if (copyEl) copyEl.textContent = "Please wait while we confirm your verification link.";
+        if (continueBtn) continueBtn.classList.add("hidden");
+        return;
+      }
+
+      if (state === "success") {
+        if (titleEl) titleEl.textContent = "Email Verified Successfully!";
+        if (copyEl) copyEl.textContent = "Your KimoAI account is now verified. You can now log in.";
+        if (continueBtn) continueBtn.classList.remove("hidden");
+        return;
+      }
+
+      if (titleEl) titleEl.textContent = "Verification Failed";
+      if (copyEl) {
+        copyEl.textContent = "This verification link is invalid or expired. Please request a new verification email below.";
+      }
+      if (continueBtn) continueBtn.classList.remove("hidden");
+    }
+
+    function hydrateEmailFromQuery() {
+      const email = new URLSearchParams(window.location.search).get("email") || "";
+      if (email && resendEmail) resendEmail.value = email;
+    }
+  }
+
+  function initLoginQueryHints() {
+    const isLoginPage = !!$("#login-form");
+    if (!isLoginPage) return;
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("verificationRequired") === "1") {
+      showToast("Please verify your email address before logging in.", "error");
+    }
+  }
+
+  async function requireVerifiedUser() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      window.location.href = "login.html";
+      return null;
+    }
+
+    if (!user.email_confirmed_at) {
+      const email = encodeURIComponent(user.email || "");
+      await supabase.auth.signOut();
+      window.location.href = `verify-email.html?email=${email}`;
+      return null;
+    }
+
+    return user;
+  }
+
+  function showResendHelper(email) {
+    const slot = $("#loginResendHelp");
+    if (!slot) return;
+    slot.classList.remove("hidden");
+    slot.innerHTML = `<p class="small-note" style="margin-top: 4px;">Need another verification email? <a href="verify-email.html?email=${encodeURIComponent(
+      email
+    )}">Resend Verification Email</a></p>`;
+  }
+
+  function mapSupabaseError(error) {
+    if (!error) return "Something went wrong. Please try again.";
+    const message = String(error.message || "").toLowerCase();
+
+    if (message.includes("invalid login credentials")) return "Incorrect email or password.";
+    if (message.includes("email not confirmed")) return "Please verify your email address before logging in.";
+    if (message.includes("already registered") || message.includes("already been registered")) {
+      return "An account with this email already exists.";
+    }
+    if (message.includes("over_email_send_rate_limit") || message.includes("rate limit") || message.includes("too many")) {
+      return "Too many requests. Please wait a moment and try again.";
+    }
+
+    return error.message || "Something went wrong. Please try again.";
+  }
+
+  function startResendCooldown() {
+    const until = Date.now() + RESEND_COOLDOWN_SECONDS * 1000;
+    setStore(RESEND_STATE_KEY, { until });
+  }
+
+  function isResendCoolingDown() {
+    const state = getStore(RESEND_STATE_KEY, null);
+    return !!(state && Number(state.until) > Date.now());
+  }
+
+  function updateResendCooldown(labelEl, buttonEl) {
+    const state = getStore(RESEND_STATE_KEY, null);
+    if (!state || Number(state.until) <= Date.now()) {
+      if (labelEl) labelEl.textContent = "";
+      if (buttonEl) buttonEl.disabled = false;
+      return;
+    }
+
+    const secondsLeft = Math.max(0, Math.ceil((Number(state.until) - Date.now()) / 1000));
+    if (labelEl) labelEl.textContent = `You can resend in ${secondsLeft}s`;
+    if (buttonEl) buttonEl.disabled = true;
   }
 
   function seedProjectsIfNeeded(userId) {
@@ -519,6 +787,12 @@
     ];
 
     setStore(PROJECTS_KEY, [...seed, ...all]);
+  }
+
+  function disableForm(form, message) {
+    const submitButton = $("button[type='submit']", form);
+    if (submitButton) submitButton.disabled = true;
+    showToast(message, "error");
   }
 
   function isValidEmail(email) {
