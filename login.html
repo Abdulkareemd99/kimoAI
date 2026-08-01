@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KimoAI Login | Access Your Dashboard</title>
+    <meta
+      name="description"
+      content="Log in to KimoAI and manage your AI-generated video projects."
+    />
+    <meta property="og:title" content="Log In to KimoAI" />
+    <meta property="og:description" content="Access your KimoAI dashboard and video projects." />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="Main header">
+      <div class="container nav-wrap">
+        <a href="index.html#home" class="logo" aria-label="KimoAI home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          KimoAI
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+        </button>
+
+        <nav class="nav-menu" aria-label="Main navigation">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#generator">AI Video Generator</a>
+          <a href="index.html#features">Features</a>
+          <a href="index.html#how-it-works">How It Works</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="index.html#examples">Examples</a>
+          <a href="index.html#faq">FAQ</a>
+        </nav>
+
+        <div class="nav-ctas">
+          <a class="btn btn-secondary btn-small" href="login.html">Log In</a>
+          <a class="btn btn-primary btn-small" href="signup.html">Sign Up Free</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-wrap">
+      <section class="auth-card reveal" aria-label="Login form section">
+        <span class="badge">Welcome Back</span>
+        <h1>Log in to KimoAI</h1>
+        <p class="section-copy">Continue building and managing your video projects.</p>
+
+        <form id="login-form" class="form-grid" novalidate>
+          <div class="field">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" autocomplete="email" required />
+            <div id="loginEmailError" class="field-error" aria-live="polite"></div>
+          </div>
+
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <div class="input-group">
+              <input id="loginPassword" type="password" autocomplete="current-password" required />
+              <button class="toggle-password" type="button" data-target="#loginPassword">Show</button>
+            </div>
+            <div id="loginPasswordError" class="field-error" aria-live="polite"></div>
+          </div>
+
+          <div class="inline-row">
+            <label class="checkbox" for="rememberMe">
+              <input id="rememberMe" type="checkbox" />
+              Remember me
+            </label>
+            <button id="forgotPasswordButton" type="button" class="btn btn-secondary btn-small">Forgot password?</button>
+          </div>
+
+          <button class="btn btn-primary btn-large" type="submit">Log In</button>
+        </form>
+
+        <p class="small-note">Don't have an account? <a href="signup.html">Sign Up Free</a></p>
+      </section>
+    </main>
+
+    <div id="forgotModal" class="modal" aria-hidden="true" role="dialog" aria-label="Forgot password modal">
+      <div class="modal-box" style="max-width: 520px">
+        <div class="modal-head">
+          <strong>Reset your password</strong>
+          <button class="icon-btn" data-modal-close aria-label="Close forgot password modal">X</button>
+        </div>
+        <div class="modal-body">
+          <p class="section-copy" style="margin-top: 0">
+            Enter your email address and we will simulate sending a password reset link.
+          </p>
+          <form id="forgot-form" class="form-grid" novalidate>
+            <div class="field">
+              <label for="forgotEmail">Email address</label>
+              <input id="forgotEmail" type="email" required />
+              <div id="forgotEmailError" class="field-error" aria-live="polite"></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-medium">Send Reset Link</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

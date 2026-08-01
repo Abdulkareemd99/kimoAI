@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KimoAI Dashboard | Manage Your AI Video Projects</title>
+    <meta
+      name="description"
+      content="KimoAI dashboard for managing video projects, credits, and account settings."
+    />
+    <meta property="og:title" content="KimoAI Dashboard" />
+    <meta property="og:description" content="Track projects, usage, and create your next AI video." />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="site-header" aria-label="Main header">
+      <div class="container nav-wrap">
+        <a href="index.html#home" class="logo" aria-label="KimoAI home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          KimoAI
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+        </button>
+
+        <nav class="nav-menu" aria-label="Main navigation">
+          <a href="dashboard.html">Home</a>
+          <a href="index.html#generator">AI Video Generator</a>
+          <a href="index.html#features">Features</a>
+          <a href="index.html#how-it-works">How It Works</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="index.html#examples">Examples</a>
+          <a href="index.html#faq">FAQ</a>
+        </nav>
+
+        <div class="nav-ctas">
+          <button id="logoutButton" class="btn btn-secondary btn-small" type="button">Log Out</button>
+          <a class="btn btn-primary btn-small" href="index.html#generator">Create Video</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <div class="container">
+        <div class="dash-head reveal">
+          <div>
+            <span class="badge">Dashboard</span>
+            <h1 class="section-title">Welcome back, <span id="dashUserName">Creator</span></h1>
+            <p class="section-copy">Manage your projects, credits, and AI video workflows.</p>
+          </div>
+          <button id="createVideoBtn" class="btn btn-primary btn-large" type="button">Create New Video</button>
+        </div>
+
+        <section class="dashboard-grid reveal" aria-label="Dashboard metrics">
+          <article class="dashboard-card">
+            <h3>Video Credits</h3>
+            <p><strong>30 / 100 Video Credits Used</strong></p>
+            <div class="credits-meter" aria-label="Video credits progress"><span></span></div>
+          </article>
+          <article class="dashboard-card">
+            <h3>My Videos</h3>
+            <p>12 published videos this month.</p>
+          </article>
+          <article class="dashboard-card">
+            <h3>Account Settings</h3>
+            <p>Manage profile, billing, and team permissions.</p>
+            <button id="accountSettingsBtn" class="btn btn-secondary btn-small" type="button">Open Settings</button>
+          </article>
+        </section>
+
+        <section class="reveal" aria-label="Recent projects">
+          <div class="projects-head">
+            <h2 class="section-title" style="font-size: 1.6rem">Recent Projects</h2>
+            <div class="search-group">
+              <input id="projectSearch" type="search" placeholder="Search projects..." aria-label="Search projects" />
+              <select id="projectFilter" aria-label="Filter projects by status">
+                <option value="all">All statuses</option>
+                <option value="Draft">Draft</option>
+                <option value="In Review">In Review</option>
+                <option value="Published">Published</option>
+              </select>
+            </div>
+          </div>
+          <div id="projectList" class="project-list"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

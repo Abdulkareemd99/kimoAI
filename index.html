@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KimoAI | Turn Your Ideas Into Stunning AI Videos</title>
+    <meta
+      name="description"
+      content="KimoAI helps creators and teams transform scripts, text prompts, and images into professional AI videos in minutes."
+    />
+    <meta property="og:title" content="KimoAI | AI Video Generation Platform" />
+    <meta
+      property="og:description"
+      content="Create stunning videos from ideas, scripts, and images with KimoAI."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80" />
+    <meta property="og:url" content="https://kimoai.demo" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="Main header">
+      <div class="container nav-wrap">
+        <a href="index.html#home" class="logo" aria-label="KimoAI home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          KimoAI
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+        </button>
+
+        <nav class="nav-menu" aria-label="Main navigation">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#generator">AI Video Generator</a>
+          <a href="index.html#features">Features</a>
+          <a href="index.html#how-it-works">How It Works</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="index.html#examples">Examples</a>
+          <a href="index.html#faq">FAQ</a>
+        </nav>
+
+        <div class="nav-ctas">
+          <a class="btn btn-secondary btn-small" href="login.html">Log In</a>
+          <a class="btn btn-primary btn-small" href="signup.html">Sign Up Free</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="home" class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy reveal">
+            <span class="badge">Turn Your Ideas Into Stunning AI Videos</span>
+            <h1>Create Stunning Videos With AI</h1>
+            <p>
+              Turn your ideas, scripts, and images into professional-quality videos in
+              minutes with the power of artificial intelligence.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-large" href="signup.html">Start Creating Free</a>
+              <button
+                class="btn btn-secondary btn-large"
+                data-modal-target="#demoModal"
+                data-video-url="https://www.youtube-nocookie.com/embed/ScMzIvxBSi4"
+              >
+                Watch Demo
+              </button>
+            </div>
+            <div class="hero-stats" aria-label="KimoAI usage stats">
+              <div class="stat">
+                <strong>1.2M+</strong>
+                <span>Videos created</span>
+              </div>
+              <div class="stat">
+                <strong>35K+</strong>
+                <span>Active creators</span>
+              </div>
+              <div class="stat">
+                <strong>94%</strong>
+                <span>Customer satisfaction</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual reveal" aria-label="AI dashboard preview">
+            <img
+              class="hero-img"
+              src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80"
+              alt="Creative team reviewing AI-generated video dashboard"
+              loading="eager"
+            />
+            <div class="floating-ui float-1" aria-hidden="true">
+              <strong>Script to Scene</strong>
+              <small>12 storyboard scenes ready</small>
+            </div>
+            <div class="floating-ui float-2" aria-hidden="true">
+              <strong>Voiceover AI</strong>
+              <small>English, Spanish, Arabic</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="generator" class="section">
+        <div class="container">
+          <span class="badge reveal">AI Video Generator</span>
+          <h2 class="section-title reveal">Create Videos From Simple Ideas</h2>
+          <p class="section-copy reveal">
+            Explore KimoAI's generation controls to shape your creative direction. Connect
+            your preferred AI backend when you are ready to generate final output.
+          </p>
+
+          <form id="generator-form" class="generator-panel reveal" aria-label="AI video generator form">
+            <div class="field">
+              <label for="promptInput">Text Prompt</label>
+              <textarea id="promptInput" required>
+Create a cinematic promotional video for a modern coffee shop in New York City.
+              </textarea>
+              <span class="helper">Describe your concept in as much detail as you want.</span>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="styleSelect">Style</label>
+                <select id="styleSelect" aria-label="Select video style">
+                  <option>Cinematic</option>
+                  <option>Realistic</option>
+                  <option>Animation</option>
+                  <option>Corporate</option>
+                  <option>Social Media</option>
+                  <option>Product Commercial</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="durationSelect">Video Duration</label>
+                <select id="durationSelect" aria-label="Select video duration">
+                  <option>15 seconds</option>
+                  <option selected>30 seconds</option>
+                  <option>60 seconds</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="ratioSelect">Aspect Ratio</label>
+                <select id="ratioSelect" aria-label="Select aspect ratio">
+                  <option>16:9</option>
+                  <option>9:16</option>
+                  <option>1:1</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="voiceSelect">Voice and Language</label>
+                <select id="voiceSelect" aria-label="Select voice style">
+                  <option>Natural Female - English</option>
+                  <option>Natural Male - English</option>
+                  <option>Neutral - Spanish</option>
+                  <option>Professional - Arabic</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button type="submit" class="btn btn-primary btn-large">Generate Video</button>
+              <a href="pricing.html" class="btn btn-secondary btn-large">View Plans</a>
+            </div>
+            <p class="small-note">
+              Demo mode: generation UI is interactive, while video rendering connects to your
+              backend API in production.
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="container">
+          <span class="badge reveal">Platform Features</span>
+          <h2 class="section-title reveal">Built for modern AI video production</h2>
+          <div class="card-grid four reveal">
+            <article class="feature-card">
+              <span class="feature-icon">TV</span>
+              <h3>Text to Video</h3>
+              <p>Transform simple text prompts into engaging videos.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon">IV</span>
+              <h3>Image to Video</h3>
+              <p>Animate static images and bring them to life.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon">VO</span>
+              <h3>AI Voiceovers</h3>
+              <p>Generate natural-sounding voiceovers in multiple languages.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon">AV</span>
+              <h3>AI Avatars</h3>
+              <p>Create videos with realistic AI presenters and digital avatars.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon">CC</span>
+              <h3>Automatic Subtitles</h3>
+              <p>Generate accurate subtitles automatically.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon">MS</span>
+              <h3>Multiple Video Styles</h3>
+              <p>Create cinematic, realistic, animated, corporate, and social videos.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon">FG</span>
+              <h3>Fast Video Generation</h3>
+              <p>Create professional video content in minutes.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon">SM</span>
+              <h3>Social Media Ready</h3>
+              <p>Generate videos optimized for TikTok, Reels, and Shorts.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="section">
+        <div class="container">
+          <span class="badge reveal">How It Works</span>
+          <h2 class="section-title reveal">Go from idea to video in three steps</h2>
+          <div class="card-grid steps reveal">
+            <article class="step-card">
+              <span class="step-num">1</span>
+              <h3>Describe Your Idea</h3>
+              <p>Enter a simple text prompt or upload an image to define your concept.</p>
+            </article>
+            <article class="step-card">
+              <span class="step-num">2</span>
+              <h3>Customize Your Video</h3>
+              <p>Choose style, duration, voice, aspect ratio, and creative controls.</p>
+            </article>
+            <article class="step-card">
+              <span class="step-num">3</span>
+              <h3>Create Your Video</h3>
+              <p>KimoAI processes your creative instructions into a polished video draft.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="container">
+          <span class="badge reveal">Built For Teams</span>
+          <h2 class="section-title reveal">From solo creators to growing companies</h2>
+          <div class="card-grid three reveal">
+            <article class="info-card">
+              <img
+                src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=900&q=80"
+                alt="Professional video creator editing a campaign"
+                loading="lazy"
+              />
+              <div class="video-meta">
+                <h3>Professional Video Creator</h3>
+                <p>Build premium visuals quickly without heavy production overhead.</p>
+              </div>
+            </article>
+            <article class="info-card">
+              <img
+                src="https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&fit=crop&w=900&q=80"
+                alt="Marketing professional planning campaign videos"
+                loading="lazy"
+              />
+              <div class="video-meta">
+                <h3>Marketing Professional</h3>
+                <p>Launch product videos and ad variations in hours, not days.</p>
+              </div>
+            </article>
+            <article class="info-card">
+              <img
+                src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=900&q=80"
+                alt="Small business owner preparing social videos"
+                loading="lazy"
+              />
+              <div class="video-meta">
+                <h3>Small Business Owner</h3>
+                <p>Create content consistently with limited time and budget.</p>
+              </div>
+            </article>
+            <article class="info-card">
+              <img
+                src="https://images.unsplash.com/photo-1611162616805-6c9b6b8f4f29?auto=format&fit=crop&w=900&q=80"
+                alt="Social media creator recording short-form content"
+                loading="lazy"
+              />
+              <div class="video-meta">
+                <h3>Social Media Creator</h3>
+                <p>Deliver high-impact reels and stories tailored to every channel.</p>
+              </div>
+            </article>
+            <article class="info-card">
+              <img
+                src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=900&q=80"
+                alt="Creative team collaborating on video strategy"
+                loading="lazy"
+              />
+              <div class="video-meta">
+                <h3>Creative Team</h3>
+                <p>Collaborate on scripts, brand styles, and output at scale.</p>
+              </div>
+            </article>
+            <article class="info-card">
+              <img
+                src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=900&q=80"
+                alt="Business analyst reviewing campaign performance"
+                loading="lazy"
+              />
+              <div class="video-meta">
+                <h3>Data-Driven Growth</h3>
+                <p>Iterate quickly with performance-ready content pipelines.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="examples" class="section">
+        <div class="container examples-wrap">
+          <span class="badge reveal">Video Gallery</span>
+          <h2 class="section-title reveal">See What's Possible With KimoAI</h2>
+          <div class="card-grid three reveal">
+            <article class="video-card">
+              <div class="video-thumb">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=900&q=80" alt="Product Advertisement thumbnail" loading="lazy" />
+                <div class="play-overlay">
+                  <button class="play-btn" data-modal-target="#videoModal" data-video-url="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ" aria-label="Play Product Advertisement">&#9658;</button>
+                </div>
+              </div>
+              <div class="video-meta">
+                <h3>Product Advertisement</h3>
+                <div class="meta-row"><span>Commercial</span><span>0:30</span></div>
+              </div>
+            </article>
+
+            <article class="video-card">
+              <div class="video-thumb">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80" alt="Social Media Reel thumbnail" loading="lazy" />
+                <div class="play-overlay">
+                  <button class="play-btn" data-modal-target="#videoModal" data-video-url="https://www.youtube-nocookie.com/embed/lTTajzrSkCw" aria-label="Play Social Media Reel">&#9658;</button>
+                </div>
+              </div>
+              <div class="video-meta">
+                <h3>Social Media Reel</h3>
+                <div class="meta-row"><span>Short-form</span><span>0:15</span></div>
+              </div>
+            </article>
+
+            <article class="video-card">
+              <div class="video-thumb">
+                <img src="https://images.unsplash.com/photo-1580894742597-87bc8789db3d?auto=format&fit=crop&w=900&q=80" alt="AI Avatar Presentation thumbnail" loading="lazy" />
+                <div class="play-overlay">
+                  <button class="play-btn" data-modal-target="#videoModal" data-video-url="https://www.youtube-nocookie.com/embed/ysz5S6PUM-U" aria-label="Play AI Avatar Presentation">&#9658;</button>
+                </div>
+              </div>
+              <div class="video-meta">
+                <h3>AI Avatar Presentation</h3>
+                <div class="meta-row"><span>Explainer</span><span>1:00</span></div>
+              </div>
+            </article>
+
+            <article class="video-card">
+              <div class="video-thumb">
+                <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=900&q=80" alt="Cinematic Story thumbnail" loading="lazy" />
+                <div class="play-overlay">
+                  <button class="play-btn" data-modal-target="#videoModal" data-video-url="https://www.youtube-nocookie.com/embed/J---aiyznGQ" aria-label="Play Cinematic Story">&#9658;</button>
+                </div>
+              </div>
+              <div class="video-meta">
+                <h3>Cinematic Story</h3>
+                <div class="meta-row"><span>Narrative</span><span>0:45</span></div>
+              </div>
+            </article>
+
+            <article class="video-card">
+              <div class="video-thumb">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80" alt="Marketing Campaign thumbnail" loading="lazy" />
+                <div class="play-overlay">
+                  <button class="play-btn" data-modal-target="#videoModal" data-video-url="https://www.youtube-nocookie.com/embed/2Vv-BfVoq4g" aria-label="Play Marketing Campaign">&#9658;</button>
+                </div>
+              </div>
+              <div class="video-meta">
+                <h3>Marketing Campaign</h3>
+                <div class="meta-row"><span>Growth</span><span>0:30</span></div>
+              </div>
+            </article>
+
+            <article class="video-card">
+              <div class="video-thumb">
+                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=80" alt="Educational Video thumbnail" loading="lazy" />
+                <div class="play-overlay">
+                  <button class="play-btn" data-modal-target="#videoModal" data-video-url="https://www.youtube-nocookie.com/embed/rUWxSEwctFU" aria-label="Play Educational Video">&#9658;</button>
+                </div>
+              </div>
+              <div class="video-meta">
+                <h3>Educational Video</h3>
+                <div class="meta-row"><span>Learning</span><span>0:60</span></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <span class="badge reveal">Customer Stories</span>
+          <h2 class="section-title reveal">Trusted by teams building video-first growth</h2>
+          <p class="section-copy reveal">Fictional demo testimonials for preview purposes.</p>
+
+          <div class="testimonial-shell reveal">
+            <article class="testimonial-card" data-testimonial-item>
+              <div class="testimonial-head">
+                <img class="avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" alt="Profile photo of Sarah Mitchell" loading="lazy" />
+                <div>
+                  <strong>Sarah Mitchell</strong>
+                  <div>Marketing Director, Northlane Commerce</div>
+                </div>
+              </div>
+              <div class="rating">★★★★★</div>
+              <p>
+                KimoAI has completely changed the way we create marketing content. What
+                used to take our team days now takes just a few minutes.
+              </p>
+            </article>
+
+            <article class="testimonial-card hidden" data-testimonial-item>
+              <div class="testimonial-head">
+                <img class="avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80" alt="Profile photo of David Brooks" loading="lazy" />
+                <div>
+                  <strong>David Brooks</strong>
+                  <div>Founder, Peakline Studio</div>
+                </div>
+              </div>
+              <div class="rating">★★★★★</div>
+              <p>
+                We publish more campaigns with better consistency. The style controls and
+                AI voiceovers are exactly what our clients need.
+              </p>
+            </article>
+
+            <article class="testimonial-card hidden" data-testimonial-item>
+              <div class="testimonial-head">
+                <img class="avatar" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=200&q=80" alt="Profile photo of Lena Ahmed" loading="lazy" />
+                <div>
+                  <strong>Lena Ahmed</strong>
+                  <div>Creative Lead, Stellar EDU</div>
+                </div>
+              </div>
+              <div class="rating">★★★★★</div>
+              <p>
+                KimoAI helps us create educational videos at scale while preserving brand
+                quality and classroom clarity.
+              </p>
+            </article>
+
+            <div class="carousel-controls">
+              <div>
+                <button class="icon-btn" data-carousel-prev aria-label="Previous testimonial">&#8592;</button>
+                <button class="icon-btn" data-carousel-next aria-label="Next testimonial">&#8594;</button>
+              </div>
+              <div class="carousel-dots" aria-label="Testimonial slide indicators">
+                <button class="dot active" aria-label="Go to testimonial 1"></button>
+                <button class="dot" aria-label="Go to testimonial 2"></button>
+                <button class="dot" aria-label="Go to testimonial 3"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="section">
+        <div class="container">
+          <span class="badge reveal">FAQ</span>
+          <h2 class="section-title reveal">Frequently asked questions</h2>
+          <div class="faq-list reveal">
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">1. What is AI video generation?<span>+</span></button>
+              <div class="faq-answer"><p>AI video generation uses machine learning models to turn prompts, scripts, and images into structured video content automatically.</p></div>
+            </article>
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">2. How does KimoAI work?<span>+</span></button>
+              <div class="faq-answer"><p>You provide your concept and settings, then KimoAI organizes visuals, motion, and voice into a production-ready draft workflow.</p></div>
+            </article>
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">3. Can I use my own images?<span>+</span></button>
+              <div class="faq-answer"><p>Yes. You can upload branded assets and product images to personalize generated scenes.</p></div>
+            </article>
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">4. Can I use AI-generated videos commercially?<span>+</span></button>
+              <div class="faq-answer"><p>Commercial usage is available on eligible paid plans with licensing terms described in plan details.</p></div>
+            </article>
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">5. What video formats are supported?<span>+</span></button>
+              <div class="faq-answer"><p>KimoAI supports common widescreen, vertical, and square formats for web and social publishing.</p></div>
+            </article>
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">6. Can I cancel my subscription?<span>+</span></button>
+              <div class="faq-answer"><p>Yes. You can cancel anytime from billing settings, and your plan remains active through the billing cycle.</p></div>
+            </article>
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">7. Do you offer a free plan?<span>+</span></button>
+              <div class="faq-answer"><p>Yes. The Free plan lets you test core generation features before upgrading.</p></div>
+            </article>
+            <article class="faq-item">
+              <button class="faq-question" aria-expanded="false">8. How long does video generation take?<span>+</span></button>
+              <div class="faq-answer"><p>Most videos are prepared in minutes depending on duration, quality settings, and queue volume.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="cta-band reveal">
+            <div>
+              <h2 class="section-title">Build your next video campaign with KimoAI</h2>
+              <p class="section-copy" style="color: rgba(255,255,255,.85)">
+                Create professional videos from simple ideas, scripts, and images with the
+                power of AI.
+              </p>
+            </div>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-large" href="signup.html">Start Creating Free</a>
+              <a class="btn btn-secondary btn-large" href="pricing.html">Explore Pricing</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <a href="index.html" class="logo" style="color: #fff">
+              <span class="logo-mark" aria-hidden="true"></span>
+              KimoAI
+            </a>
+            <p>
+              KimoAI helps creators, marketers, and businesses transform ideas into
+              engaging videos with the power of AI.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="footer-title">Product</h3>
+            <ul class="footer-list">
+              <li><a href="index.html#generator">AI Video Generator</a></li>
+              <li><a href="index.html#features">Features</a></li>
+              <li><a href="index.html#examples">Examples</a></li>
+              <li><a href="pricing.html">Pricing</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="footer-title">Company</h3>
+            <ul class="footer-list">
+              <li><a href="index.html#about">About</a></li>
+              <li><a href="mailto:hello@kimoai.demo">Contact</a></li>
+              <li><a href="index.html#about">Careers</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="footer-title">Resources</h3>
+            <ul class="footer-list">
+              <li><a href="index.html#faq">Help Center</a></li>
+              <li><a href="index.html#how-it-works">Documentation</a></li>
+              <li><a href="index.html#examples">Blog</a></li>
+              <li><a href="pricing.html">API</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="footer-title">Legal</h3>
+            <ul class="footer-list">
+              <li><a href="index.html#faq">Privacy Policy</a></li>
+              <li><a href="index.html#faq">Terms of Service</a></li>
+              <li><a href="index.html#faq">Cookie Policy</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <small>Copyright 2026 KimoAI. All rights reserved.</small>
+          <div class="social-links" aria-label="Social links">
+            <a href="https://www.youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">YT</a>
+            <a href="https://www.instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">IG</a>
+            <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">IN</a>
+            <a href="https://x.com" target="_blank" rel="noreferrer" aria-label="X">X</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div id="demoModal" class="modal" aria-hidden="true" role="dialog" aria-label="Video demo modal">
+      <div class="modal-box">
+        <div class="modal-head">
+          <strong>KimoAI Platform Demo</strong>
+          <button class="icon-btn" data-modal-close aria-label="Close demo modal">X</button>
+        </div>
+        <div class="modal-body">
+          <iframe class="video-frame" title="KimoAI demo video" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div id="videoModal" class="modal" aria-hidden="true" role="dialog" aria-label="Example video modal">
+      <div class="modal-box">
+        <div class="modal-head">
+          <strong>KimoAI Video Example</strong>
+          <button class="icon-btn" data-modal-close aria-label="Close example modal">X</button>
+        </div>
+        <div class="modal-body">
+          <iframe class="video-frame" title="KimoAI example video" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
