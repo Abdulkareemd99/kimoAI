@@ -8,6 +8,13 @@
   const authBundle = window.kimoaiSupabase || {};
   const supabase = authBundle.client || window.supabaseClient || null;
   const verifyRedirectUrl = authBundle.verifyRedirectUrl || "";
+  const authStatus = authBundle.status || window.KIMOAI_SUPABASE_STATUS || "unknown";
+  const authError = authBundle.error || window.KIMOAI_SUPABASE_ERROR || "";
+
+  console.log("Supabase auth status:", authStatus);
+  if (authError) {
+    console.error("Supabase auth initialization error:", authError);
+  }
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -250,7 +257,8 @@
 
   function handleSignup(form) {
     if (!supabase) {
-      disableForm(form, "Authentication service unavailable.");
+      const message = authError || "Authentication service unavailable. Add the current Supabase public anon key from the dashboard to enable sign-up.";
+      disableForm(form, message);
       return;
     }
 
@@ -322,7 +330,8 @@
 
   function handleLogin(form) {
     if (!supabase) {
-      disableForm(form, "Authentication service unavailable.");
+      const message = authError || "Authentication service unavailable. Add the current Supabase public anon key from the dashboard to enable login.";
+      disableForm(form, message);
       return;
     }
 
@@ -441,7 +450,8 @@
   async function initDashboard() {
     if (!document.body.classList.contains("dashboard-page")) return;
     if (!supabase) {
-      showToast("Authentication service unavailable.", "error");
+      const message = authError || "Authentication service unavailable. Add the current Supabase public anon key from the dashboard to enable the dashboard.";
+      showToast(message, "error");
       return;
     }
 
